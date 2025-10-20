@@ -467,19 +467,25 @@
             const tg = window.Telegram.WebApp;
             tg.ready();
             tg.expand();
-            
-            // Применяем цвета темы Telegram
+
             const root = document.documentElement;
-            const themeParams = tg.themeParams;
-            
-            if (themeParams.bg_color) root.style.setProperty('--tg-theme-bg-color', themeParams.bg_color);
-            if (themeParams.text_color) root.style.setProperty('--tg-theme-text-color', themeParams.text_color);
-            if (themeParams.hint_color) root.style.setProperty('--tg-theme-hint-color', themeParams.hint_color);
-            if (themeParams.link_color) root.style.setProperty('--tg-theme-link-color', themeParams.link_color);
-            if (themeParams.button_color) root.style.setProperty('--tg-theme-button-color', themeParams.button_color);
-            if (themeParams.button_text_color) root.style.setProperty('--tg-theme-button-text-color', themeParams.button_text_color);
-            if (themeParams.secondary_bg_color) root.style.setProperty('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color);
+
+            function applyThemeColors(theme) {
+                for (const [key, value] of Object.entries(theme)) {
+                    const cssVar = '--tg-theme-' + key.replace(/_/g, '-');
+                    root.style.setProperty(cssVar, value);
+                }
+            }
+
+            // Применяем начальную тему
+            applyThemeColors(tg.themeParams);
+
+            // Реакция на изменение темы в Telegram
+            tg.onEvent('themeChanged', () => {
+                applyThemeColors(tg.themeParams);
+            });
         }
+
 
         const symbols = ['🍒', '🍋', '💎', '⭐', '🍊', '🔔', '7️⃣'];
         let balance = 1000;
