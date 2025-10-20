@@ -2,35 +2,64 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💎 Симулятор Слотов - Казино</title>
     <style>
+        :root {
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #999999;
+            --tg-theme-link-color: #2481cc;
+            --tg-theme-button-color: #2481cc;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-secondary-bg-color: #f4f4f5;
+            --tg-theme-header-bg-color: #ffffff;
+            --tg-theme-accent-text-color: #2481cc;
+            --tg-theme-section-bg-color: #ffffff;
+            --tg-theme-section-header-text-color: #6d6d72;
+            --tg-theme-subtitle-text-color: #999999;
+            --tg-theme-destructive-text-color: #ff3b30;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
             overflow-x: hidden;
+            overflow-y: auto;
+            touch-action: pan-y;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            background: var(--tg-theme-section-bg-color);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
             width: 100%;
             position: relative;
             overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                border-radius: 30px;
+                padding: 40px;
+                max-width: 600px;
+            }
         }
 
         .container::before {
@@ -42,7 +71,7 @@
             height: 200%;
             background: linear-gradient(45deg, 
                 transparent, 
-                rgba(255, 215, 0, 0.1), 
+                rgba(255, 215, 0, 0.05), 
                 transparent);
             animation: shine 3s infinite;
         }
@@ -54,85 +83,132 @@
 
         h1 {
             text-align: center;
-            color: #764ba2;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            color: var(--tg-theme-text-color);
+            font-size: clamp(1.5em, 5vw, 2.5em);
+            margin-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             position: relative;
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 30px;
+            color: var(--tg-theme-hint-color);
+            font-size: clamp(0.9em, 3vw, 1.1em);
+            margin-bottom: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            h1 {
+                margin-bottom: 10px;
+            }
+            .subtitle {
+                margin-bottom: 30px;
+            }
         }
 
         .stats {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 30px;
-            gap: 15px;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        
+        @media (min-width: 768px) {
+            .stats {
+                margin-bottom: 30px;
+                gap: 15px;
+            }
         }
 
         .stat-box {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 15px;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
+            padding: 12px 15px;
+            border-radius: 12px;
             text-align: center;
             flex: 1;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s;
+            min-width: 0;
+        }
+        
+        @media (min-width: 768px) {
+            .stat-box {
+                padding: 15px 25px;
+                border-radius: 15px;
+            }
         }
 
-        .stat-box:hover {
-            transform: translateY(-5px);
+        .stat-box:active {
+            transform: scale(0.98);
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: clamp(0.75em, 2.5vw, 0.9em);
             opacity: 0.9;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .stat-value {
-            font-size: 1.8em;
+            font-size: clamp(1.3em, 4vw, 1.8em);
             font-weight: bold;
         }
 
         .slot-machine {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            border-radius: 20px;
-            padding: 40px 30px;
-            margin-bottom: 30px;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3),
-                        0 10px 30px rgba(0, 0, 0, 0.3);
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 15px;
+            padding: 20px 15px;
+            margin-bottom: 15px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1),
+                        0 2px 8px rgba(0, 0, 0, 0.1);
             position: relative;
+            border: 2px solid var(--tg-theme-button-color);
+        }
+        
+        @media (min-width: 768px) {
+            .slot-machine {
+                border-radius: 20px;
+                padding: 40px 30px;
+                margin-bottom: 30px;
+            }
         }
 
         .reels {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .reels {
+                gap: 15px;
+                margin-bottom: 30px;
+            }
         }
 
         .reel {
-            background: white;
-            width: 120px;
-            height: 120px;
-            border-radius: 15px;
+            background: var(--tg-theme-bg-color);
+            width: clamp(80px, 25vw, 120px);
+            height: clamp(80px, 25vw, 120px);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 4em;
-            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.2),
-                        0 5px 15px rgba(255, 255, 255, 0.1);
-            border: 4px solid #ffd700;
+            font-size: clamp(2.5em, 10vw, 4em);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1),
+                        0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 3px solid var(--tg-theme-button-color);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .reel {
+                border-radius: 15px;
+                border: 4px solid var(--tg-theme-button-color);
+            }
         }
 
         .reel.spinning {
@@ -146,7 +222,7 @@
 
         .reel.winner {
             animation: pulse 0.5s ease-in-out 3;
-            box-shadow: 0 0 30px #ffd700;
+            box-shadow: 0 0 20px var(--tg-theme-button-color);
         }
 
         @keyframes pulse {
@@ -164,61 +240,66 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
+        }
+        
+        @media (min-width: 768px) {
+            .bet-control {
+                gap: 15px;
+            }
         }
 
         .bet-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: clamp(45px, 12vw, 50px);
+            height: clamp(45px, 12vw, 50px);
             border-radius: 50%;
-            font-size: 1.5em;
+            font-size: clamp(1.3em, 4vw, 1.5em);
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .bet-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            touch-action: manipulation;
         }
 
         .bet-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.9);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         }
 
         .bet-amount {
-            font-size: 1.5em;
+            font-size: clamp(1.1em, 4vw, 1.5em);
             font-weight: bold;
-            color: white;
-            min-width: 100px;
+            color: var(--tg-theme-button-text-color);
+            background: var(--tg-theme-button-color);
+            padding: 8px 16px;
+            border-radius: 12px;
+            min-width: clamp(100px, 30vw, 150px);
             text-align: center;
         }
 
         .spin-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
             border: none;
-            padding: 20px 60px;
-            font-size: 1.5em;
+            padding: clamp(15px, 4vw, 20px) clamp(40px, 12vw, 60px);
+            font-size: clamp(1.1em, 4vw, 1.5em);
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .spin-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+            letter-spacing: 1.5px;
+            width: 100%;
+            max-width: 300px;
+            touch-action: manipulation;
         }
 
         .spin-btn:active:not(:disabled) {
-            transform: translateY(0);
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         }
 
         .spin-btn:disabled {
@@ -228,12 +309,18 @@
 
         .message {
             text-align: center;
-            font-size: 1.3em;
+            font-size: clamp(1em, 3.5vw, 1.3em);
             font-weight: bold;
-            min-height: 40px;
-            margin-top: 20px;
-            color: #764ba2;
+            min-height: clamp(30px, 8vw, 40px);
+            margin-top: 10px;
+            color: var(--tg-theme-text-color);
             animation: fadeIn 0.5s;
+        }
+        
+        @media (min-width: 768px) {
+            .message {
+                margin-top: 20px;
+            }
         }
 
         @keyframes fadeIn {
@@ -242,29 +329,41 @@
         }
 
         .message.win {
-            color: #f5576c;
-            font-size: 1.8em;
-            text-shadow: 0 0 10px rgba(245, 87, 108, 0.5);
+            color: var(--tg-theme-link-color);
+            font-size: clamp(1.2em, 4.5vw, 1.8em);
+            text-shadow: 0 0 10px rgba(36, 129, 204, 0.3);
         }
 
         .payouts {
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
+            background: var(--tg-theme-secondary-bg-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (min-width: 768px) {
+            .payouts {
+                border-radius: 15px;
+                padding: 20px;
+                margin-top: 20px;
+            }
         }
 
         .payouts h3 {
-            color: #764ba2;
-            margin-bottom: 15px;
+            color: var(--tg-theme-text-color);
+            margin-bottom: 12px;
             text-align: center;
+            font-size: clamp(1em, 3.5vw, 1.2em);
         }
 
         .payout-line {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: clamp(0.85em, 2.5vw, 1em);
+            color: var(--tg-theme-text-color);
         }
 
         .payout-line:last-child {
@@ -363,6 +462,25 @@
     </div>
 
     <script>
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            
+            // Применяем цвета темы Telegram
+            const root = document.documentElement;
+            const themeParams = tg.themeParams;
+            
+            if (themeParams.bg_color) root.style.setProperty('--tg-theme-bg-color', themeParams.bg_color);
+            if (themeParams.text_color) root.style.setProperty('--tg-theme-text-color', themeParams.text_color);
+            if (themeParams.hint_color) root.style.setProperty('--tg-theme-hint-color', themeParams.hint_color);
+            if (themeParams.link_color) root.style.setProperty('--tg-theme-link-color', themeParams.link_color);
+            if (themeParams.button_color) root.style.setProperty('--tg-theme-button-color', themeParams.button_color);
+            if (themeParams.button_text_color) root.style.setProperty('--tg-theme-button-text-color', themeParams.button_text_color);
+            if (themeParams.secondary_bg_color) root.style.setProperty('--tg-theme-secondary-bg-color', themeParams.secondary_bg_color);
+        }
+
         const symbols = ['🍒', '🍋', '💎', '⭐', '🍊', '🔔', '7️⃣'];
         let balance = 1000;
         let totalWin = 0;
