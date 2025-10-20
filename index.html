@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 Симулятор Слотов - Казино</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255, 215, 0, 0.1), 
+                transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .slot-machine {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3),
+                        0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .reels {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .reel {
+            background: white;
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.2),
+                        0 5px 15px rgba(255, 255, 255, 0.1);
+            border: 4px solid #ffd700;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reel.spinning {
+            animation: spin 0.1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+
+        .reel.winner {
+            animation: pulse 0.5s ease-in-out 3;
+            box-shadow: 0 0 30px #ffd700;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bet-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .bet-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .bet-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .bet-btn:active {
+            transform: scale(0.95);
+        }
+
+        .bet-amount {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .spin-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.6);
+        }
+
+        .spin-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 40px;
+            margin-top: 20px;
+            color: #764ba2;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.win {
+            color: #f5576c;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px rgba(245, 87, 108, 0.5);
+        }
+
+        .payouts {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .payouts h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .payout-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .payout-line:last-child {
+            border-bottom: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 2em;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-300px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <h1>💎 СЛОТЫ КАЗИНО 💎</h1>
+        <p class="subtitle">Испытай свою удачу!</p>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-label">Баланс</div>
+                <div class="stat-value" id="balance">1000</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Выигрыш</div>
+                <div class="stat-value" id="totalWin">0</div>
+            </div>
+        </div>
+
+        <div class="slot-machine">
+            <div class="reels">
+                <div class="reel" id="reel1">🍒</div>
+                <div class="reel" id="reel2">🍋</div>
+                <div class="reel" id="reel3">💎</div>
+            </div>
+
+            <div class="controls">
+                <div class="bet-control">
+                    <button class="bet-btn" id="decreaseBet">−</button>
+                    <div class="bet-amount">Ставка: <span id="betAmount">10</span></div>
+                    <button class="bet-btn" id="increaseBet">+</button>
+                </div>
+                <button class="spin-btn" id="spinBtn">КРУТИТЬ</button>
+            </div>
+        </div>
+
+        <div class="message" id="message">Удачи! 🍀</div>
+
+        <div class="payouts">
+            <h3>💰 Таблица Выплат</h3>
+            <div class="payout-line">
+                <span>💎 💎 💎</span>
+                <span><strong>x50</strong></span>
+            </div>
+            <div class="payout-line">
+                <span>🍒 🍒 🍒</span>
+                <span><strong>x10</strong></span>
+            </div>
+            <div class="payout-line">
+                <span>🍋 🍋 🍋</span>
+                <span><strong>x8</strong></span>
+            </div>
+            <div class="payout-line">
+                <span>⭐ ⭐ ⭐</span>
+                <span><strong>x7</strong></span>
+            </div>
+            <div class="payout-line">
+                <span>2 одинаковых</span>
+                <span><strong>x2</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const symbols = ['🍒', '🍋', '💎', '⭐', '🍊', '🔔', '7️⃣'];
+        let balance = 1000;
+        let totalWin = 0;
+        let bet = 10;
+        let isSpinning = false;
+
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+        const spinBtn = document.getElementById('spinBtn');
+        const message = document.getElementById('message');
+        const balanceEl = document.getElementById('balance');
+        const totalWinEl = document.getElementById('totalWin');
+        const betAmountEl = document.getElementById('betAmount');
+        const decreaseBetBtn = document.getElementById('decreaseBet');
+        const increaseBetBtn = document.getElementById('increaseBet');
+
+        function updateDisplay() {
+            balanceEl.textContent = balance;
+            totalWinEl.textContent = totalWin;
+            betAmountEl.textContent = bet;
+        }
+
+        function getRandomSymbol() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.textContent = ['💰', '💎', '⭐', '🎉'][Math.floor(Math.random() * 4)];
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 0.5 + 's';
+                    particlesContainer.appendChild(particle);
+                    setTimeout(() => particle.remove(), 3000);
+                }, i * 50);
+            }
+        }
+
+        function calculateWin(s1, s2, s3) {
+            if (s1 === s2 && s2 === s3) {
+                if (s1 === '💎') return bet * 50;
+                if (s1 === '🍒') return bet * 10;
+                if (s1 === '🍋') return bet * 8;
+                if (s1 === '⭐') return bet * 7;
+                return bet * 5;
+            }
+            if (s1 === s2 || s2 === s3 || s1 === s3) {
+                return bet * 2;
+            }
+            return 0;
+        }
+
+        async function spin() {
+            if (isSpinning || balance < bet) {
+                message.textContent = 'Недостаточно средств! 💸';
+                message.className = 'message';
+                return;
+            }
+
+            isSpinning = true;
+            balance -= bet;
+            updateDisplay();
+            spinBtn.disabled = true;
+            message.textContent = 'Крутим... 🎰';
+            message.className = 'message';
+
+            [reel1, reel2, reel3].forEach(reel => {
+                reel.classList.add('spinning');
+                reel.classList.remove('winner');
+            });
+
+            const spinDuration = [1000, 1500, 2000];
+            const results = [];
+
+            for (let i = 0; i < 3; i++) {
+                await new Promise(resolve => {
+                    const reel = [reel1, reel2, reel3][i];
+                    const interval = setInterval(() => {
+                        reel.textContent = getRandomSymbol();
+                    }, 100);
+
+                    setTimeout(() => {
+                        clearInterval(interval);
+                        const finalSymbol = getRandomSymbol();
+                        reel.textContent = finalSymbol;
+                        reel.classList.remove('spinning');
+                        results.push(finalSymbol);
+                        resolve();
+                    }, spinDuration[i]);
+                });
+            }
+
+            const win = calculateWin(results[0], results[1], results[2]);
+            
+            if (win > 0) {
+                balance += win;
+                totalWin += win;
+                message.textContent = `🎉 ВЫИГРЫШ ${win} монет! 🎉`;
+                message.className = 'message win';
+                [reel1, reel2, reel3].forEach(reel => reel.classList.add('winner'));
+                createParticles();
+            } else {
+                message.textContent = 'Попробуй ещё раз! 🎲';
+                message.className = 'message';
+            }
+
+            updateDisplay();
+            isSpinning = false;
+            spinBtn.disabled = false;
+        }
+
+        decreaseBetBtn.addEventListener('click', () => {
+            if (bet > 10) {
+                bet -= 10;
+                updateDisplay();
+            }
+        });
+
+        increaseBetBtn.addEventListener('click', () => {
+            if (bet < 100 && balance >= bet + 10) {
+                bet += 10;
+                updateDisplay();
+            }
+        });
+
+        spinBtn.addEventListener('click', spin);
+
+        // Горячая клавиша Space для вращения
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !isSpinning) {
+                e.preventDefault();
+                spin();
+            }
+        });
+
+        updateDisplay();
+    </script>
+</body>
+</html>
