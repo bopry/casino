@@ -261,10 +261,12 @@
             transition: all 0.2s;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             touch-action: manipulation;
+            opacity: 0.6;
         }
 
         .bet-btn:active {
             transform: scale(0.9);
+            opacity: 1;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -279,6 +281,18 @@
             text-align: center;
         }
 
+        @keyframes spinBtnShadow {
+            0% {
+                box-shadow: 0 0px 12px var(--tg-theme-button-color);
+            }
+            50% {
+                box-shadow: 0 0px 0px var(--tg-theme-button-color);
+            }
+            100% {
+                box-shadow: 0 0px 12px var(--tg-theme-button-color);
+            }
+        }
+
         .spin-btn {
             background: var(--tg-theme-button-color);
             color: var(--tg-theme-button-text-color);
@@ -289,11 +303,11 @@
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0px 12px var(--tg-theme-button-color);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             width: 100%;
-            max-width: 300px;
+            animation: spinBtnShadow 2s infinite;
             touch-action: manipulation;
         }
 
