@@ -405,6 +405,18 @@
         .media-hide {
             opacity: 0;
         }
+
+        .dark-bg {
+            position: fixed;
+            background-color: #0008;
+            width: 100vw;
+            height: 100vh;
+            top: 0px;
+            left: 0px;
+            z-index: 99;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -413,6 +425,8 @@
     </video>
 
     <img id="loseImage" class="media-hide" src="lose.jpg" alt="Lose">
+
+    <div class="dark-bg"></div>
 
     <div class="container">
         <h1>⚡️boban.game⚡️</h1>
@@ -526,6 +540,8 @@
 
         function showWinVideo() {
             const video = document.getElementById('winVideo');
+            const bg = document.querySelector('.dark-bg');
+
             video.style.display = 'block';
             setTimeout(() => {
                 video.className = "media-show";
@@ -535,14 +551,17 @@
             
             setTimeout(() => {
                 video.className = "media-hide";
+                bg.style.display = "none";
                 setTimeout(() => {
                     video.style.display = 'none';
                     video.pause();
                 }, 500);
             }, 6000);
+            bg.style.display = "block";
         }
 
         function showLoseImage() {
+            const bg = document.querySelector('.dark-bg');
             const image = document.getElementById('loseImage');
             image.style.display = 'block';
             setTimeout(() => {
@@ -551,10 +570,12 @@
             
             setTimeout(() => {
                 image.className = "media-hide";
+                bg.style.display = "none";
                 setTimeout(() => {
                     image.style.display = 'none';
                 }, 500);
             }, 2000);
+            bg.style.display = "block";
         }
 
         function calculateWin(s1, s2, s3) {
