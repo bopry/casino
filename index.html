@@ -370,38 +370,36 @@
             border-bottom: none;
         }
 
-        .particles {
+        #winVideo, #loseImage {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 1000;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 15px;
+            display: none;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s ease;
         }
 
-        .particle {
-            position: absolute;
-            font-size: 2em;
-            animation: float 3s ease-in-out infinite;
+        .media-show {
+            opacity: 1;
+        }
+
+        .media-hide {
             opacity: 0;
-        }
-
-        @keyframes float {
-            0% {
-                opacity: 1;
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-300px) rotate(360deg);
-            }
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
+    <video id="winVideo" class="media-hide" muted playsinline>
+        <source src="win.MOV" type="video/mp4">
+    </video>
+
+    <img id="loseImage" class="media-hide" src="lose.jpg" alt="Lose">
+
     <div class="container">
         <h1>⚡️boban.game⚡️</h1>
         <p class="subtitle">Испытай свою удачу!</p>
@@ -478,15 +476,12 @@
                 }
             }
 
-            // Применяем начальную тему
             applyThemeColors(tg.themeParams);
 
-            // Реакция на изменение темы в Telegram
             tg.onEvent('themeChanged', () => {
                 applyThemeColors(tg.themeParams);
             });
         }
-
 
         const symbols = ['🍒', '🍋', '💎', '⭐', '🍊', '🔔', '7️⃣'];
         let balance = 1000;
@@ -515,19 +510,37 @@
             return symbols[Math.floor(Math.random() * symbols.length)];
         }
 
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
+        function showWinVideo() {
+            const video = document.getElementById('winVideo');
+            video.style.display = 'block';
+            setTimeout(() => {
+                video.className = "media-show";
+            }, 10);
+            video.currentTime = 0;
+            video.play();
+            
+            setTimeout(() => {
+                video.className = "media-hide";
                 setTimeout(() => {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.textContent = ['💰', '💎', '⭐', '🎉'][Math.floor(Math.random() * 4)];
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.animationDelay = Math.random() * 0.5 + 's';
-                    particlesContainer.appendChild(particle);
-                    setTimeout(() => particle.remove(), 3000);
-                }, i * 50);
-            }
+                    video.style.display = 'none';
+                    video.pause();
+                }, 500);
+            }, 6000);
+        }
+
+        function showLoseImage() {
+            const image = document.getElementById('loseImage');
+            image.style.display = 'block';
+            setTimeout(() => {
+                image.className = "media-show";
+            }, 10);
+            
+            setTimeout(() => {
+                image.className = "media-hide";
+                setTimeout(() => {
+                    image.style.display = 'none';
+                }, 500);
+            }, 2000);
         }
 
         function calculateWin(s1, s2, s3) {
@@ -592,10 +605,11 @@
                 message.textContent = `🎉 ВЫИГРЫШ ${win} монет! 🎉`;
                 message.className = 'message win';
                 [reel1, reel2, reel3].forEach(reel => reel.classList.add('winner'));
-                createParticles();
+                showWinVideo();
             } else {
                 message.textContent = 'Попробуй ещё раз! 🎲';
                 message.className = 'message';
+                showLoseImage();
             }
 
             updateDisplay();
@@ -619,7 +633,6 @@
 
         spinBtn.addEventListener('click', spin);
 
-        // Горячая клавиша Space для вращения
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !isSpinning) {
                 e.preventDefault();
